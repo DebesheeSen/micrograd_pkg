@@ -1,3 +1,6 @@
+from .nn import Module
+from .engine import Value
+
 def softmax(logits):
     max_val = max([v.data for v in logits])
     shifted = [v - max_val for v in logits]
