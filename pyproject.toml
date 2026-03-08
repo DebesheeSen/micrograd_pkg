@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "micrograd"
+name = "micrograd-ds"
 version = "0.1.0"
 description = "A tiny autograd engine and neural net library"
 requires-python = ">=3.8"
