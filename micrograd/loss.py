@@ -49,6 +49,31 @@ class CrossEntropyLoss:
 
         return loss
 
+class BinaryCrossEntropyLoss(Module):
+    """Binary Cross Entropy — for binary classification with sigmoid output.
+    
+    Args:
+        y_pred: sigmoid output Value in (0, 1)
+        y_true: ground truth Value (0 or 1)
+    
+    Formula: -(y * log(p) + (1-y) * log(1-p))
+    """
+    def __call__(self, y_pred, y_true):
+        if not isinstance(y_true, Value):
+            y_true = Value(float(y_true))
+        if not isinstance(y_pred, Value):
+            y_pred = Value(float(y_pred))
+
+        # Clamp to avoid log(0) — add tiny epsilon by offsetting data only
+        eps = 1e-7
+        p_clamped = Value(max(min(y_pred.data, 1 - eps), eps), _children=(y_pred,), _op="clamp")
+        def backward():
+            y_pred.grad += p_clamped.grad
+        p_clamped._backward = backward
+
+        loss = -(y_true * p_clamped.log() + (Value(1.0) - y_true) * (Value(1.0) - p_clamped).log())
+        return loss
+
 def accuracy(y_true, y_pred):
 
     # ---------- CASE 1: Binary (single Value output) ----------
