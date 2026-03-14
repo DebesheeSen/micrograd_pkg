@@ -8,7 +8,7 @@ class Module:
     def train(self):
         self.training = True
         for attr in self.__dict__.values():
-            if is instance(attr,Module):
+            if isinstance(attr,Module):
                 attr.train()
             elif isinstance(attr, list):
                 for item in attr:
